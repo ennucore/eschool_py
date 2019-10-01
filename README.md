@@ -48,10 +48,7 @@ def process_homework(hw):
 
 ### Installing
 
-Clone the repository, cd to it and install library with setup.py
 
 ```bash
-git clone https://github.com/ennucore/eschool_py.git
-cd eschool_py
-sudo python3 setup.py install
+sudo pip3 install eschool
 ```
