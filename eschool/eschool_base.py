@@ -10,7 +10,8 @@ m = hashlib.sha256()
 
 
 class EschoolBase:
-    def __init__(self, cookies=None, handled_homeworks=None, handled_msgs=None, handled_marks=None, period=PERIOD):
+    def __init__(self, cookies=None, handled_homeworks=None, handled_msgs=None, handled_marks=None, filename=None,
+                 period=PERIOD):
         self.session = Session()
         if cookies:
             self.session.cookies = cookies
@@ -21,13 +22,14 @@ class EschoolBase:
         self.homework_handler = None
         self.mark_handler = None
         self.message_handler = None
+        self.filename = filename
 
     @classmethod
-    def login(cls, login, password=None, period=None):
+    def login(cls, login, password=None, period=None, filename=None):
         """
         Login to the account
         """
-        self = cls(period=period)
+        self = cls(period=period, filename=filename)
         password = password or getpass.getpass('Eschool password: ')
         m.update(password.encode())
         password = m.hexdigest()
@@ -41,7 +43,7 @@ class EschoolBase:
         Save account to file
         :param filename: filename
         """
-        filename = filename
+        self.filename = filename
         with open(filename, 'w') as f:
             f.write(json.dumps(
                 (self.session.cookies.get_dict(), self.handled_homeworks, self.handled_msgs, self.handled_marks)))
@@ -56,7 +58,7 @@ class EschoolBase:
         with open(filename) as f:
             cookies, homeworks, msgs, marks = json.loads(f.read())
             cookies = cookiejar_from_dict(cookies)
-        self = cls(cookies, homeworks, msgs, marks)
+        self = cls(cookies, homeworks, msgs, marks, filename=filename)
         return self
 
     def get(self, method, **kwargs):

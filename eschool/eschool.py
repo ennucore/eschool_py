@@ -1,5 +1,5 @@
 import time
-import threading
+import traceback
 from threading import Thread
 
 from .eschool_base import EschoolBase
@@ -115,6 +115,8 @@ class EschoolClient(EschoolBase):
                     time.sleep(60 * 3)
                 except Exception as e:
                     print(f'time: {time.time()}, exception: {"".join(traceback.format_tb(e.__traceback__))}')
+                if self.filename:
+                    self.save()
 
         def messages_loop():
             while True:
@@ -128,6 +130,8 @@ class EschoolClient(EschoolBase):
                     time.sleep(60 * 3)
                 except Exception as e:
                     print('exception:', e)
+                if self.filename:
+                    self.save()
 
         Thread(target=homeworks_and_marks).start()
         if self.message_handler:
