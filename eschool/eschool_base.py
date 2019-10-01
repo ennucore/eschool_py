@@ -11,7 +11,7 @@ m = hashlib.sha256()
 
 class EschoolBase:
     def __init__(self, cookies=None, handled_homeworks=None, handled_msgs=None, handled_marks=None, filename=None,
-                 period=PERIOD):
+                 period=PERIOD, user_id=None):
         self.session = Session()
         if cookies:
             self.session.cookies = cookies
@@ -22,6 +22,7 @@ class EschoolBase:
         self.homework_handler = None
         self.mark_handler = None
         self.message_handler = None
+        self.user_id = None
         self.filename = filename
 
     @classmethod
@@ -36,6 +37,7 @@ class EschoolBase:
         self.session.post('https://app.eschool.center/ec-server/login',
                           data={'username': login,
                                 'password': password})
+        self.user_id = self.session.get('https://app.eschool.center/ec-server/student/diary').json()['user'][0]['id']
         return self
 
     def save(self, filename='eschool_account'):
@@ -46,7 +48,8 @@ class EschoolBase:
         self.filename = filename
         with open(filename, 'w') as f:
             f.write(json.dumps(
-                (self.session.cookies.get_dict(), self.handled_homeworks, self.handled_msgs, self.handled_marks)))
+                (self.session.cookies.get_dict(), self.handled_homeworks, self.handled_msgs, self.handled_marks,
+                 self.user_id)))
 
     @classmethod
     def from_file(cls, filename):
@@ -56,15 +59,15 @@ class EschoolBase:
         :return: session
         """
         with open(filename) as f:
-            cookies, homeworks, msgs, marks = json.loads(f.read())
+            cookies, homeworks, msgs, marks, user_id = json.loads(f.read())
             cookies = cookiejar_from_dict(cookies)
-        self = cls(cookies, homeworks, msgs, marks, filename=filename)
+        self = cls(cookies, homeworks, msgs, marks, filename=filename, user_id=user_id)
         return self
 
     def get(self, method, **kwargs):
         resp = self.session.get(
-            f'https://app.eschool.center/ec-server/{kwargs.get("prefix", "student")}/{method}/?userId=108217&eiId='
-            f'{self.period}' + ('&' if kwargs else '') + '&'.join(
+            f'https://app.eschool.center/ec-server/{kwargs.get("prefix", "student")}/{method}/?userId={self.user_id}'
+            f'&eiId={self.period}' + ('&' if kwargs else '') + '&'.join(
                 [key + '=' + str(kwargs[key]) for key in kwargs.keys() if key != 'prefix']))
         resp.raise_for_status()
         return resp.json()

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='eschool',
-    version='0.9',
+    version='1.0',
     packages=['eschool'],
     package_dir={'eschool': 'eschool'},
     url='https://github.com/ennucore/eschool_py',
