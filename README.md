@@ -1,6 +1,6 @@
-# Eschool python API
+# Eschool
 
-Python library to work with Eschool electronic diary
+Python library to work with Eschool electronic diary (https://eschool.center)
 
 ## Getting Started
 
