@@ -5,13 +5,13 @@ from requests import Session
 from requests.cookies import cookiejar_from_dict
 import getpass
 
-PERIOD = '145625'
+
 m = hashlib.sha256()
 
 
 class EschoolBase:
     def __init__(self, cookies=None, handled_homeworks=None, handled_msgs=None, handled_marks=None, filename=None,
-                 period=PERIOD, user_id=None):
+                 period='145624', user_id=None):
         self.session = Session()
         if cookies:
             self.session.cookies = cookies
@@ -61,7 +61,6 @@ class EschoolBase:
         with open(filename) as f:
             cookies, homeworks, msgs, marks, user_id = json.loads(f.read())
             cookies = cookiejar_from_dict(cookies)
-        print(cookies, homeworks, msgs, marks, user_id)
         self = cls(cookies, homeworks, msgs, marks, filename=filename, user_id=user_id)
         return self
 
