@@ -23,9 +23,9 @@ class EschoolClient(EschoolBase):
         lesson name (Algebra etc)]] for  each mark
         """
         result = self.get('getDiaryPeriod')['result']
-        units = {unit['unitId']: unit['unitName'] for unit in result}
+        units = {unit['unitId']: unit['unitName'] for unit in result if unit.get('unitName')}
         return [[lesson['markVal'], lesson['mktWt'], lesson['startDt'], lesson['lessonId'], lesson['lptName'],
-                 units[lesson['unitId']]]
+                 units.get(lesson['unitId'])]
                 for lesson in result if lesson.get('markVal')]
 
     def diary(self, d1=None, d2=None):
