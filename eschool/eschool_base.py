@@ -22,7 +22,7 @@ class EschoolBase:
         self.homework_handler = None
         self.mark_handler = None
         self.message_handler = None
-        self.user_id = None
+        self.user_id = user_id
         self.filename = filename
 
     @classmethod
@@ -61,6 +61,7 @@ class EschoolBase:
         with open(filename) as f:
             cookies, homeworks, msgs, marks, user_id = json.loads(f.read())
             cookies = cookiejar_from_dict(cookies)
+        print(cookies, homeworks, msgs, marks, user_id)
         self = cls(cookies, homeworks, msgs, marks, filename=filename, user_id=user_id)
         return self
 
