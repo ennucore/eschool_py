@@ -5,6 +5,15 @@ from threading import Thread
 from .eschool_base import EschoolBase
 
 
+def exception_handler(func):
+    def new_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print('exception  in handler:', e)
+    return new_func
+
+
 class EschoolClient(EschoolBase):
     """
     Eschool client
@@ -22,8 +31,9 @@ class EschoolClient(EschoolBase):
         [mark value (1,2,3,4,5), mark weight, mark date, lesson (where mark is) id, work name (homework, exam etc),
         lesson name (Algebra etc)]] for  each mark
         """
-        result = self.get('getDiaryPeriod')['result']
+        result = self.get('getDiaryUnits')['result']
         units = {unit['unitId']: unit['unitName'] for unit in result if unit.get('unitName')}
+        result = self.get('getDiaryPeriod')['result']
         return [[lesson['markVal'], lesson['mktWt'], lesson['startDt'], lesson['lessonId'], lesson['lptName'],
                  units.get(lesson['unitId'])]
                 for lesson in result if lesson.get('markVal')]

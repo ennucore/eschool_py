@@ -26,7 +26,7 @@ class EschoolBase:
         self.filename = filename
 
     @classmethod
-    def login(cls, login, password=None, period=None, filename=None):
+    def login(cls, login, password=None, period='145624', filename=None):
         """
         Login to the account
         """
