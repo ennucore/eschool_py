@@ -6,9 +6,6 @@ from requests.cookies import cookiejar_from_dict
 import getpass
 
 
-m = hashlib.sha256()
-
-
 class EschoolBase:
     def __init__(self, cookies=None, handled_homeworks=None, handled_msgs=None, handled_marks=None, filename=None,
                  period='145624', user_id=None):
@@ -32,8 +29,7 @@ class EschoolBase:
         """
         self = cls(period=period, filename=filename)
         password = password or getpass.getpass('Eschool password: ')
-        m.update(password.encode())
-        password = m.hexdigest()
+        password = hashlib.sha256(password.encode()).hexdigest()
         self.session.post('https://app.eschool.center/ec-server/login',
                           data={'username': login,
                                 'password': password})
@@ -64,11 +60,18 @@ class EschoolBase:
         self = cls(cookies, homeworks, msgs, marks, filename=filename, user_id=user_id)
         return self
 
-    def get(self, method, **kwargs):
+    def get(self, method, prefix='student', **kwargs):
         resp = self.session.get(
-            f'https://app.eschool.center/ec-server/{kwargs.get("prefix", "student")}/{method}/?userId={self.user_id}'
+            f'https://app.eschool.center/ec-server/{prefix}/{method}/?userId={self.user_id}'
             f'&eiId={self.period}' + ('&' if kwargs else '') + '&'.join(
                 [key + '=' + str(kwargs[key]) for key in kwargs.keys() if key != 'prefix']))
+        resp.raise_for_status()
+        return resp.json()
+
+    def put(self, method, data, url_data='', prefix='chat'):
+        resp = self.session.put(
+            f'https://app.eschool.center/ec-server/{prefix}/{method}{"?" + url_data if url_data else ""}',
+            json.dumps(data))
         resp.raise_for_status()
         return resp.json()
 

@@ -148,3 +148,17 @@ class EschoolClient(EschoolBase):
             Thread(target=messages_loop).start()
         while True:
             pass
+
+    def send_message(self, thread_id, text):
+        """
+        Send message with text to chat thread_id
+        """
+        return self.get('sendNew', prefix='chat', threadId=thread_id, msgText=text)
+
+    def create_chat(self, subject: str, members=()):
+        thread_id = self.put('saveThread', {'subject': subject, 'isGroup': 2})
+        if members:
+            self.put('setMembers',
+                     [{'memberObjId': member, 'memberCode': 'PRS', 'memberId': None} for member in members],
+                     url_data=f'threadId={thread_id}')
+        return thread_id
