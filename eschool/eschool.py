@@ -34,7 +34,7 @@ class EschoolClient(EschoolBase):
         result = self.get('getDiaryUnits')['result']
         units = {unit['unitId']: unit['unitName'] for unit in result if unit.get('unitName')}
         result = self.get('getDiaryPeriod')['result']
-        return [[lesson['markVal'], lesson['mktWt'], lesson['startDt'], lesson['lessonId'], lesson['lptName'],
+        return [[lesson['markVal'], lesson.get('mktWt', 1), lesson['startDt'], lesson['lessonId'], lesson['lptName'],
                  units.get(lesson['unitId'])]
                 for lesson in result if lesson.get('markVal')]
 
