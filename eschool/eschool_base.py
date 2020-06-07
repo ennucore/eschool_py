@@ -63,8 +63,8 @@ class EschoolBase:
 
     def get(self, method, prefix='student', **kwargs):
         resp = self.session.get(
-            f'https://app.eschool.center/ec-server/{prefix}/{method}/?userId={self.user_id}'
-            f'&eiId={self.period}' + ('&' if kwargs else '') + '&'.join(
+            f'https://app.eschool.center/ec-server/{prefix}/{method}?userId={self.user_id}' +
+            f'&eiId={self.period}' if self.period else '' + ('&' if kwargs else '') + '&'.join(
                 [key + '=' + str(kwargs[key]) for key in kwargs.keys() if key != 'prefix']))
         if resp.status_code == 401:
             self.auth()
