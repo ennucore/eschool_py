@@ -7,7 +7,7 @@ import getpass
 
 class EschoolBase:
     def __init__(self, login=None, password=None, handled_homeworks=None, handled_msgs=None, handled_marks=None,
-                 filename=None, period='145624', user_id=None):
+                 filename=None, period='204184', user_id=None):
         self.username = login
         self.session = Session()
         self.password = password
@@ -28,7 +28,7 @@ class EschoolBase:
         self.user_id = self.session.get('https://app.eschool.center/ec-server/student/diary').json()['user'][0]['id']
 
     @classmethod
-    def login(cls, login, password=None, period='145624', filename=None):
+    def login(cls, login, password=None, period='204184', filename=None):
         """
         Login to the account
         """
@@ -64,7 +64,7 @@ class EschoolBase:
     def get(self, method, prefix='student', **kwargs):
         resp = self.session.get(
             f'https://app.eschool.center/ec-server/{prefix}/{method}?userId={self.user_id}' +
-            f'&eiId={self.period}' if self.period else '' + ('&' if kwargs else '') + '&'.join(
+            (f'&eiId={self.period}' if self.period and prefix == 'student' else '') + ('&' if kwargs else '') + '&'.join(
                 [key + '=' + str(kwargs[key]) for key in kwargs.keys() if key != 'prefix']))
         if resp.status_code == 401:
             self.auth()

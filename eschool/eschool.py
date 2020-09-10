@@ -122,9 +122,9 @@ class EschoolClient(EschoolBase):
                             if mark[3] not in self.handled_marks:
                                 self.mark_handler(mark)
                                 self.handled_marks.append(mark[3])
-                    time.sleep(60 * 3)
                 except Exception as e:
                     print(f'time: {time.time()}, exception: {"".join(traceback.format_tb(e.__traceback__))}')
+                time.sleep(60 * 3)
                 if self.filename:
                     self.save()
 
@@ -137,9 +137,9 @@ class EschoolClient(EschoolBase):
                     for msg in reversed(msgs):
                         self.handled_msgs.append(msg['msgId'])
                         self.message_handler(msg)
-                    time.sleep(60 * 3)
                 except Exception as e:
                     print('exception:', e)
+                time.sleep(60 * 3)
                 if self.filename:
                     self.save()
 
